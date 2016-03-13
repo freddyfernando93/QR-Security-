@@ -2,6 +2,7 @@
 
 $datos= $_POST['scan'];
 $mac= $_POST['mac'];
+date_default_timezone_set('US/Arizona');
 session_start();
 include("conexion.php ");
 $con= mysql_connect($host,$user,$pw) or die ("problemas al conectar con el servidor");
@@ -10,6 +11,7 @@ mysql_select_db($db,$con)
 	$sel=mysql_query("SELECT Nombre, Apellido, MAC_Address, NivelAcceso FROM usuario WHERE MAC_Address='$_POST[mac]'",$con); 
 	$sesion=mysql_fetch_array($sel);
 	$nivel = $sesion['NivelAcceso'];
+	$nombreCompleto= $sesion['Nombre']." ".$sesion['Apellido'];
 	if($mac == $sesion['MAC_Address']){
 		
 		switch ($nivel) {
@@ -17,20 +19,36 @@ mysql_select_db($db,$con)
 		//Acceso a todas las entradas: ejecutar accion del raspberry con el codigo guardado en datos
         $dep=mysql_query("SELECT Departamento FROM Departamento WHERE Codigo_Entrada='$datos' OR Codigo_Salida='$datos'",$con); 
 		if($datos=='A1'||$datos=='B1'||$datos=='C1'||$datos=='D1'||$datos=='E1')
-			{$acc="Entrada";}
+			{$acc="Entrada";
+			 }
 		else if($datos=='A2'||$datos=='B2'||$datos=='C2'||$datos=='D2'||$datos=='E2')
 			{$acc="Salida";}
-		echo $acc;
+		$date = date('Y-m-d g:i a');
+		mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario) VALUES ('$date','$acc', '$nombreCompleto')",$con);		
+		echo $acc." a las ".$date;
+
         break;
     case 2:
 		//Acceso a determinadas entradas: validar con BD y ejecutar raspberry
 		$dep=mysql_query("SELECT Departamento FROM Departamento WHERE Codigo_Entrada='$datos' OR Codigo_Salida='$datos'",$con); 
 		if($datos=='A1'||$datos=='B1'||$datos=='C1')
-			{$acc="Entrada";
-			echo $acc;}
+		{
+			$acc="Entrada";
+			$date = date('Y-m-d g:i a');
+			mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario) VALUES ('$date','$acc', '$nombreCompleto')",$con);
+			echo $acc;
+		}
+
+
 		else if($datos=='A2'||$datos=='B2'||$datos=='C2')
-			{$acc="Salida";
-			 echo $acc;}
+		{
+			$acc="Salida";
+			$date = date('Y-m-d H:i:s');
+			mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario) VALUES ('$date','$acc', '$nombreCompleto')",$con);
+			echo $acc." a las ".$date;
+		}
+		
+
 		else echo "No tienes acceso a esta Zona";
 		
         break;
@@ -38,11 +56,21 @@ mysql_select_db($db,$con)
 		//Acceso a determinadas entradas: validar con BD y ejecutar raspberry
         $dep=mysql_query("SELECT Departamento FROM Departamento WHERE Codigo_Entrada='$datos' OR Codigo_Salida='$datos'",$con); 
 		if($datos=='A1'||$datos=='B1')
-			{$acc="Entrada";
-			echo $acc;}
+		{
+			$acc="Entrada";
+			$date = date('Y-m-d H:i:s');
+			mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario) VALUES ('$date','$acc', '$nombreCompleto')",$con);
+			echo $acc;
+		}
+
 		else if($datos=='A2'||$datos=='B2')
-			{$acc="Salida";
-			 echo $acc;}
+		{
+			$acc="Salida";
+			$date = date('Y-m-d H:i:s');
+			mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario) VALUES ('$date','$acc', '$nombreCompleto')",$con);
+			echo $acc;
+		}
+		
 		else echo "No tienes acceso a esta Zona";
         break;
 }
