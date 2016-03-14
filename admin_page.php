@@ -28,7 +28,17 @@
 		echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td></tr> \n"; 
 } 
 		echo "</table> \n"; 
+		echo "<br></br>";
 
+
+		echo "<p><strong>Registro de Acceso de Usuarios</strong></p>";
+		$sel2=mysql_query("SELECT Fecha,Entrada_Salida, Usuario, nombreDep FROM registro",$con);
+		echo "<table border = '1'> \n"; 
+		echo "<tr><td><strong>Fecha</strong></td><td><strong>Entrada/Salida</strong></td><td><strong>Nombre</strong></td><td><strong>Departamento</strong></td></tr> \n"; 
+		while ($row = mysql_fetch_row($sel2)){ //Arreglo de elementos por fila
+		echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td><td>$row[3]</td></tr> \n"; 
+} 
+		echo "</table> \n"; 
 		
 
 		}else{
