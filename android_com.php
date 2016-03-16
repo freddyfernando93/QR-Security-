@@ -1,5 +1,6 @@
 <?php
-
+$file = "doorStatus.txt";
+$handle = fopen($file,'w+');
 $datos= $_POST['scan'];
 $mac= $_POST['mac'];
 date_default_timezone_set('US/Arizona');
@@ -29,6 +30,10 @@ mysql_select_db($db,$con)
 		$date = date('Y-m-d g:i a');
 		mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VALUES ('$date','$acc', '$nombreCompleto', '$dep2')",$con);		
 		echo $acc." a las ".$date;
+		fwrite($handle, $datos);
+		sleep(2);
+		file_put_contents('doorStatus.txt', 'Sin Acceso');
+		fclose($handle);
 
         break;
     case 2:
@@ -41,6 +46,10 @@ mysql_select_db($db,$con)
 			$acc="Entrada";
 			$date = date('Y-m-d g:i a');
 mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VALUES ('$date','$acc', '$nombreCompleto', '$dep2')",$con);			echo $acc;
+		fwrite($handle, $datos);
+		sleep(2);
+		file_put_contents('doorStatus.txt', 'Sin Acceso');
+		fclose($handle);
 		}
 
 
@@ -49,11 +58,16 @@ mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VA
 			$acc="Salida";
 			$date = date('Y-m-d g:i a');
 mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VALUES ('$date','$acc', '$nombreCompleto', '$dep2')",$con);			echo $acc." a las ".$date;
+			fwrite($handle, $datos);
+		sleep(2);
+		file_put_contents('doorStatus.txt', 'Sin Acceso');
+		fclose($handle);
 		}
 		
 
-		else echo "No tienes acceso a esta Zona";
-		
+		else {echo "No tienes acceso a esta Zona";
+		fwrite($handle, 'Sin Acceso');
+		fclose($handle);}
         break;
     case 3:
 		//Acceso a determinadas entradas: validar con BD y ejecutar raspberry
@@ -65,6 +79,10 @@ mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VA
 			$acc="Entrada";
 			$date = date('Y-m-d H:i:s');
 mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VALUES ('$date','$acc', '$nombreCompleto', '$dep2')",$con);			echo $acc;
+		fwrite($handle, $datos);
+		sleep(2);
+		file_put_contents('doorStatus.txt', 'Sin Acceso');
+		fclose($handle);
 		}
 
 		else if($datos=='A2'||$datos=='B2')
@@ -72,9 +90,15 @@ mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VA
 			$acc="Salida";
 			$date = date('Y-m-d H:i:s');
 mysql_query("INSERT INTO registro (Fecha, Entrada_Salida, Usuario, nombreDep) VALUES ('$date','$acc', '$nombreCompleto', '$dep2')",$con);			echo $acc;
+		fwrite($handle, $datos);
+		sleep(2);
+		file_put_contents('doorStatus.txt', 'Sin Acceso');
+		fclose($handle);
 		}
 		
-		else echo "No tienes acceso a esta Zona";
+		else {echo "No tienes acceso a esta Zona";
+		fwrite($handle, 'Sin Acceso');
+		fclose($handle);}
         break;
 }
 		
